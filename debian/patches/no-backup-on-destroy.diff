@@ -3,12 +3,12 @@ Index: new/src/lib/destroy.c
 --- new.orig/src/lib/destroy.c	2012-09-28 09:05:45.000000000 +0200
 +++ new/src/lib/destroy.c	2012-09-28 09:41:49.000000000 +0200
 @@ -271,7 +271,7 @@
- 	logger(0, 0, "Destroying container private area: %s", fs->private);
+ 	}
  	if ((ret = vps_destroy_dir(veid, fs->private)))
  		return ret;
 -	move_config(veid, BACKUP);
 +	move_config(veid, DESTR_ALL);
- 	if (destroy_dumpfile(veid, cpt != NULL ? cpt->dumpdir : NULL) < 0)
+ 	if (destroy_dump(veid, cpt != NULL ? cpt->dumpdir : NULL) < 0)
  		logger(-1, errno, "Warning: failed to remove dump file");
  	if (rmdir(fs->root) < 0)
 Index: new/include/util.h

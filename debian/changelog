@@ -1,3 +1,9 @@
+vzctl (4.7-1pve1) unstable; urgency=low
+
+  * Added support for vzctl 4.7
+
+ -- Kamil Trzcinski <ayufan@ayufan.eu>  Tue, 22 Apr 2014 14:38:26 +0200
+
 vzctl (4.0-1pve5) unstable; urgency=low
 
   * Fix unrecognized option '--all' in vzifup-post

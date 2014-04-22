@@ -1,13 +1,13 @@
 RELEASE=3.2
 
-SVER=4.0
+SVER=4.7
 PACKAGERELEASE=1pve5
 ARCH=amd64
 
 PACKAGE=vzctl
 DEB=${PACKAGE}_${SVER}-${PACKAGERELEASE}_${ARCH}.deb
 
-VZCTL_BRANCH=master  # vzctl-4.0 does not exist
+VZCTL_BRANCH=vzctl-${SVER}  # vzctl-4.0 does not exist
 
 all: ${DEB}
 
