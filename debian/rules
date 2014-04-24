@@ -82,6 +82,9 @@ install: build
 	# lintian overrides
 	install -m 644 $(CURDIR)/debian/vzctl.override $(CURDIR)/debian/vzctl/usr/share/lintian/overrides/vzctl
 
+	# install sysctl file
+	install -m 644 $(CURDIR)/debian/usr.sbin.vzctl $(CURDIR)/debian/vzctl/etc/apparmor.d/usr.sbin.vzctl
+
 	# remove files in /etc/pve/openvz
 	rm -rf $(CURDIR)/debian/vzctl/etc/pve/openvz
 	rmdir $(CURDIR)/debian/vzctl/etc/pve
