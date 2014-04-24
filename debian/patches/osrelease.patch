@@ -1,0 +1,17 @@
+--- vzctl-4.7.org/src/lib/env.c	2014-04-22 21:36:38.000000000 +0200
++++ vzctl-4.7/src/lib/env.c	2014-04-24 14:53:14.590880162 +0200
+@@ -363,12 +368,12 @@
+ #define KVER(a, b, c) (((a) << 16) + ((b) << 8) + (c))
+ static int compare_osrelease(const char *cur, const char *min)
+ {
+-	int cur_a, cur_b, cur_c;
++	int cur_a, cur_b, cur_c = 0;
+ 	int min_a, min_b, min_c;
+ 	int ret;
+ 
+ 	ret = sscanf(cur, "%d.%d.%d", &cur_a, &cur_b, &cur_c);
+-	if (ret != 3) {
++	if (ret != 3 && ret != 2) {
+ 		logger(-1, 0, "Unable to parse kernel osrelease (%s)", cur);
+ 		return -1;
+ 	}

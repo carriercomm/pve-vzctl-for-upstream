@@ -27,7 +27,7 @@ config.status:  configure
 	dh_testdir
 	sed -i "s/'$(VZCTL_VERSION)'/'$(VZCTL_DEBVERSION)'/g" configure
 	./configure \
-	    --with-ploop \
+	    --without-ploop \
 	    --host=$(DEB_HOST_GNU_TYPE) \
 	    --build=$(DEB_BUILD_GNU_TYPE) \
 	    --prefix=/usr 		\
@@ -83,6 +83,7 @@ install: build
 	install -m 644 $(CURDIR)/debian/vzctl.override $(CURDIR)/debian/vzctl/usr/share/lintian/overrides/vzctl
 
 	# install sysctl file
+	mkdir -p $(CURDIR)/debian/vzctl/etc/apparmor.d/
 	install -m 644 $(CURDIR)/debian/usr.sbin.vzctl $(CURDIR)/debian/vzctl/etc/apparmor.d/usr.sbin.vzctl
 
 	# remove files in /etc/pve/openvz

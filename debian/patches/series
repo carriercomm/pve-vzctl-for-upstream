@@ -9,3 +9,4 @@ allow-abs-ostemplate-path.diff
 always-create-dev-console.patch
 keep-bridge-MTU.patch
 fix-vzifup-post-error.patch
+osrelease.patch
