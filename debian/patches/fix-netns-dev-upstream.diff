@@ -1,0 +1,15 @@
+--- vzctl-4.7.org/scripts/vps-functions.in	2014-04-22 21:36:38.000000000 +0200
++++ vzctl-4.7/scripts/vps-functions.in	2014-04-25 14:59:13.041987548 +0200
+@@ -120,7 +120,11 @@
+ # with no visible action.
+ vzcreatepair()
+ {
+-	${IP_CMD} link show | grep -w -F $HNAME >/dev/null 2>&1 && return
++	${IP_CMD} link show | grep -w -F $HNAME >/dev/null 2>&1
++	if [ $? -eq 0 ]; then
++		${IP_CMD} netns exec $VEID {$IP_CMD} link show | grep -w -F $VNAME >/dev/null 2>&1 && return
++		vzdestroylink
++	fi
+ 
+ 	${IP_CMD} netns exec $VEID ${IP_CMD} link add name $HNAME type veth peer name $VNAME
+ 	${IP_CMD} netns exec $VEID ${IP_CMD} link set $HNAME netns $$
