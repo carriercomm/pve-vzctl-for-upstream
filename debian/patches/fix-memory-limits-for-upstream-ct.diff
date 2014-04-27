@@ -1,0 +1,97 @@
+Index: vzctl-4.7/src/lib/cgroup.c
+===================================================================
+--- vzctl-4.7.orig/src/lib/cgroup.c	2014-04-27 10:30:20.594368990 +0000
++++ vzctl-4.7/src/lib/cgroup.c	2014-04-27 12:09:07.380212506 +0000
+@@ -113,18 +113,71 @@
+ 	 */
+ 	switch (c) {
+ 	case MEMORY:
+-		if ((mem = cgroup_add_controller(ct, "memory")))
+-			ret = cgroup_set_value_uint64(mem, MEMLIMIT, *val);
+-		break;
+-	case SWAP:
++	case SWAP: {
++		struct cgroup *current;
++		u_int64_t mval, memswval;
++
++		// read current memory limits
++		current = cgroup_new_cgroup(cgrp);
++		if (current) {
++			ret = cgroup_get_cgroup(current);
++			if (ret) {
++				goto out_memory;
++			}
++
++			if ((mem = cgroup_get_controller(current, "memory"))) {
++				ret = cgroup_get_value_uint64(mem, MEMLIMIT, &mval);
++				if (ret) {
++					goto out_memory;
++				}
++
++				ret = cgroup_get_value_uint64(mem, SWAPLIMIT, &memswval);
++				if (ret) {
++					goto out_memory;
++				}
++			} else {
++				ret = -EINVAL;
++			}
++
++	out_memory:
++			if (ret) {
++				cgroup_free(&current);
++				break;
++			}
++		} else {
++			ret = -EINVAL;
++			break;
++		}
++
+ 		/* Unlike kmem, this must always be greater than mem */
+ 		if ((mem = cgroup_add_controller(ct, "memory"))) {
+-			u_int64_t mval;
+-			if (!cgroup_get_value_uint64(mem, MEMLIMIT, &mval))
+-				ret = cgroup_set_value_uint64(mem, SWAPLIMIT,
+-							      mval + *val);
++			u_int64_t newmem, newmemsw;
++
++			if (c == MEMORY) {
++				newmem = *val;
++				newmemsw = newmem + memswval - mval;
++			} else {
++				newmem = mval;
++				newmemsw = newmem + *val;
++			}
++
++			// set limits in correct order: memsw > mem
++			if(newmem > memswval) {
++				ret = cgroup_set_value_uint64(mem, SWAPLIMIT, newmemsw);
++				if (ret) {
++					break;
++				}
++				ret = cgroup_set_value_uint64(mem, MEMLIMIT, newmem);
++			} else {
++				ret = cgroup_set_value_uint64(mem, MEMLIMIT, newmem);
++				if (ret) {
++					break;
++				}
++				ret = cgroup_set_value_uint64(mem, SWAPLIMIT, newmemsw);
++			}
+ 		}
+ 		break;
++	}
+ 	case KMEMORY:
+ 		if ((mem = cgroup_add_controller(ct, "memory")))
+ 			ret = cgroup_set_value_uint64(mem, KMEMLIMIT, *val);
+Index: vzctl-4.7/src/lib/hooks_ct.c
+===================================================================
+--- vzctl-4.7.orig/src/lib/hooks_ct.c	2014-04-27 12:09:46.149314272 +0000
++++ vzctl-4.7/src/lib/hooks_ct.c	2014-04-27 12:10:42.528004550 +0000
+@@ -167,7 +167,7 @@
+ 	return ret;
+ }
+ 
+-#define add_value(val, var, mult) do { if (val) { var = *val * mult; } } while (0)
++#define add_value(val, var, mult) do { if (val) { var = val[1] * mult; } } while (0)
+ 
+ static int ct_setlimits(vps_handler *h, envid_t veid, struct ub_struct *ub)
+ {

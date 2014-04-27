@@ -12,4 +12,5 @@ fix-vzifup-post-error.patch
 osrelease.patch
 fix-venet0-for-upstream-ct.diff
 fix-netns-dev-upstream.diff
+fix-memory-limits-for-upstream-ct.diff
 
