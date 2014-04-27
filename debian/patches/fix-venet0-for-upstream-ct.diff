@@ -14,7 +14,7 @@ Index: vzctl-4.7/scripts/vps-functions
  	if [ "x$BRIDGE" = "xvenet0" ]; then
  		if [ $(brctl show venet0 2>/dev/null | tail -n+2 | wc -l) -eq 0 ]; then
  			brctl addbr venet0
-+			${SYSCTL_CMD} net.ipv4.conf.venet0.proxy_arp=1
++			${SYSCTL_CMD} -q net.ipv4.conf.venet0.proxy_arp=1
  			${IP_CMD} link set venet0 up
  		fi
  	fi

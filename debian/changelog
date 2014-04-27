@@ -1,6 +1,9 @@
 vzctl (4.7-1pve1) unstable; urgency=low
 
   * Added support for vzctl 4.7
+  * Added apparmor profile
+  * Fixed of osreleases for new kernels
+  * Fixed recreation of netns devices
 
  -- Kamil Trzcinski <ayufan@ayufan.eu>  Tue, 22 Apr 2014 14:38:26 +0200
 
