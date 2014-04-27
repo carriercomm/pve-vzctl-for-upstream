@@ -10,5 +10,6 @@ always-create-dev-console.patch
 keep-bridge-MTU.patch
 fix-vzifup-post-error.patch
 osrelease.patch
+fix-venet0-for-upstream-ct.diff
 fix-netns-dev-upstream.diff
 

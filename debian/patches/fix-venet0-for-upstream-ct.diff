@@ -1,0 +1,20 @@
+Index: vzctl-4.7/scripts/vps-functions
+===================================================================
+--- vzctl-4.7.orig/scripts/vps-functions.in	2014-04-27 11:31:35.305887200 +0200
++++ vzctl-4.7/scripts/vps-functions.in	2014-04-27 11:33:03.117834003 +0200
+@@ -37,6 +37,7 @@
+ 
+ ARPSEND_CMD="arpsend -c 1 -w 1"
+ IP_CMD="ip"
++SYSCTL_CMD="sysctl"
+ 
+ # For 'ip' and 'arpsend' to work,
+ # make sure these dirs are in $PATH
+@@ -176,6 +177,7 @@
+ 	if [ "x$BRIDGE" = "xvenet0" ]; then
+ 		if [ $(brctl show venet0 2>/dev/null | tail -n+2 | wc -l) -eq 0 ]; then
+ 			brctl addbr venet0
++			${SYSCTL_CMD} net.ipv4.conf.venet0.proxy_arp=1
+ 			${IP_CMD} link set venet0 up
+ 		fi
+ 	fi
